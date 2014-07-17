@@ -1,0 +1,276 @@
+<script type="text/javascript">
+//wrong / leaky
+function prison1(){
+	for(i=1; i<10; i++){
+		console.log(i);
+	}
+}
+prison1();
+console.log(i);
+//outputs 1-9 from line 5 and 10 from line 9.  i is global because it was not declared with a var to keep it local 
+
+//acceptable -- but is j local to the function or to the loop?  (to the function, but many would mistakenly believe it is local to the loop)
+function prison2(){
+	for(var j=1; j<10; j++){
+		console.log(j);
+	}
+}
+prison2();
+// console.log(j);
+//outputs 1-9 from line 15 and would output an uncaught Reference Error from line 19, since j is local and thus not available outside the prison2 function
+
+//best practice -- makes variable k scope clear -- local to function (and not just to the loop, as some might mistakenly anticipate)
+function prison3(){
+	var k;
+	for(k=1; k<10; k++){
+		console.log(k);
+	}
+}
+prison3();
+// console.log(k);
+//outputs 1-9 from line 26 and would output an uncaught Reference Error from line 30, since k is local and thus not available outside the prison3 function
+
+function prison4(){
+	var prisoner	=	"I am local",
+		warden		=	"I am local, too",
+		guards		=	"We are local, three!";
+	console.log(prisoner, warden, guards);
+}
+prison4();
+// console.log(prisoner, warden, guards);
+// outputs the expected text from vars on lines 34-36 in response to console.log on line 37' would output uncaught ReferenceError from line 40, since the three variables are local and thus not available outside the prison4 function
+
+
+//	HOISTING -- declaration of variables are hoisted to the beginning of the function, so hoisted1() and hoisted2() are functionally identical, but since initialization of the variable is not hoisted, v is undefined in both functions.  (It isn't a reference error, since hoisting assures it is declared, but its value is undefined at the point that it is used.)
+function hoisted1(){
+	console.log(v);
+	var v=1;
+}
+
+function hoisted2(){
+	var v;
+	console.log(v);
+	v=1;
+}
+
+hoisted1();
+hoisted2();
+// In  both cases v exists (due to hoisting of declaration of variables), but is undefined (due to initialization of variables not being hoisted)
+
+
+function prison5(){
+	console.log(prisoner);
+	var prisoner="Now I am defined!";
+}
+prison5();
+// console.log => undefined, due to initialization of variable prisoner after the console.log.
+
+function prison6(){
+	// console.log(prisoner);
+}
+prison6();
+//console.log would => ReferenceError, due to non-declaration and non-initialization of the variable prisoner
+
+function prison7(){
+	console.log(prisoner);	//unassigned
+	var prisoner, warden, guards;
+	console.log(prisoner);	//unassigned
+	prisoner='prisoner assigned';
+	console.log(prisoner);	// prisoner assigned, due to initialization on previous line
+}
+prison7();
+//see above for details
+
+var regular_joe="regular_joe is assigned in global scope";
+function prison8(){
+	console.log(regular_joe);
+}
+function prison9(){
+	console.log(regular_joe);
+	var regular_joe;
+}
+prison8();
+prison9();
+
+// prison8 => the globally declared "regular_joe is assigned in global scope"
+// prison9 => undefined, due to the redeclaration of regular_joe in the function, and that hoisted declaration is checked before looking for regular_joe in the global scope (is local just checked first or does it actually override the global WITHIN the function?)
+
+function myFunction(arg1, arg2){		//1 - declares and initialises the function arguments
+	var local_var='foo',				//2 - declares the local variables, 
+		a_function=function (){				//including anonymous functions assigned to a local variable, but doesn't initialize them
+			console.log('a function');
+		};
+	function inner(){					//3 - declares and initializes functions
+		console.log('inner');
+	}
+}
+myFunction(1,2);
+
+// JavaScript actually reads through scripts twice, first to declare and initialize functions and to declare, but not initialize anonymous functions in local variables, and on the second time to run them
+
+var regular_joe="regular_joe is assigned";
+function prison10(){
+	console.log(regular_joe);
+	var regular_joe;
+}
+
+var regular_joe="regular_joe is assigned";
+function prison11(regular_joe){
+	console.log(regular_joe);
+	var regular_joe;
+	console.log(regular_joe);
+}
+prison11('the_regular_joe_argument');
+
+// As before, the local declaration of regular_joe in the function overrides its global assignment in prison10()
+// In prison11, the passing of a parameter called regular_joe to the function overrides the global declaration of regular_joe & hoisting causes it to be recognized even after its declaration (but not assignment) in the function & it would have behaved the same even in the absence of the declaration on line 120
+
+var regular_joe="I'm free!";
+// logs I'm free!
+console.log(regular_joe);
+function supermax1(){
+	var regular_joe="I'm in supermax";
+	// logs I'm in supermax
+	console.log(regular_joe);
+	function prison12(){
+		console.log(regular_joe);
+		var regular_joe;
+	}
+	// logs 'undefined'
+	prison12();
+}
+supermax1();
+// results as noted above; calling prison12() from outside supermax will get a ReferenceError, due to its scope being contained by supermax();
+
+var regular_joe="I'm free!";
+// logs I'm free!
+console.log(regular_joe);
+function supermax2(){
+	// logs I'm free!
+	console.log(regular_joe);
+	function prison12(){
+		console.log(regular_joe);
+	}
+	// logs I'm free!
+	prison12();
+}
+supermax2();
+// with regular_joe not being redeclared or re-initialized within supermax2 or prison12, it retains the value set in the global scope
+
+
+
+// PROTOTYPE-BASED OBJECTS
+
+// 1 -- define the prototype object
+var proto={
+	sentence : 4,
+	probation :2
+};
+
+// 2 -- define the object constructor
+var Prisoner = function(name, id){
+	this.name = name;
+	this.id=id;
+};
+
+// 3 -- link constructor to prototype
+Prisoner.prototype=proto;
+
+// 4 -- instantiate the objects
+var firstPrisoner=new Prisoner('Joe', '12A');
+var secondPrisoner=new Prisoner('Sam', '2BC');
+
+console.log(firstPrisoner);
+console.log(secondPrisoner);
+
+
+
+// OBJECT.CREATE instead of new for creation of an object
+var proto={
+	sentence : 4,
+	probation :2
+};
+var thirdPrisoner=Object.create(proto);
+thirdPrisoner.name='Bob';
+thirdPrisoner.id='DEF';
+var fourthPrisoner=Object.create(proto);
+fourthPrisoner.name='Tom';
+fourthPrisoner.id='GH1';
+
+console.log(thirdPrisoner);
+console.log(fourthPrisoner);
+
+// logging of the firstPrisoner shows 
+// Prisoner {name: "Joe", id: "12A", sentence: 4, probation: 2} 
+// logging of the thirdPrisoner shows
+// Object {name: "Bob", id: "DEF", sentence: 4, probation: 2} 
+
+// while both firstPrisoner and thirdPrisoner are objects, firstPrisoner is explicitly labelled as the Prisoner object, while thirdPrisoner is not
+
+
+
+// OBJECT.CREATE with factory function
+var proto={
+	sentence : 4,
+	probation :2
+};
+// factory function starts with make   -- makeDojo, makeNinja, makePrisoner
+var makePrisoner=function(name, id){
+	var prisoner=Object.create(proto);
+	prisoner.name=name;
+	prisoner.id=id;
+	return prisoner;
+}
+var fifthPrisoner=makePrisoner('Ted', 'I12');
+var sixthPrisoner=makePrisoner('Lou', '123');
+
+console.log(fifthPrisoner);
+console.log(sixthPrisoner);
+
+sixthPrisoner.sentence=8;
+sixthPrisoner.probation=3;
+proto.probation=5;
+
+console.log(firstPrisoner);
+console.log(secondPrisoner);
+console.log(thirdPrisoner);
+console.log(fourthPrisoner);
+console.log(fifthPrisoner);
+console.log(sixthPrisoner);
+
+// with the factory function (though not the initial prototype or Object.create functions), adjusting an attribute of the proto will adjust that attribute for all instances of prisoner created BEFORE or AFTER that change to the prototype's attribute.  Change to an individual instances attributes will override changes to the prototype.
+// again, the objects from this approach are not explicitly labelled as the Prisoner object, just as Object
+
+
+// OBJECT.CREATE for older browsers -- IE 6, 7, and 8 must die!
+
+//Cross-browser method to support Object.create()
+var objectCreate=function(arg){
+	if(!arg){return{};}
+	function obj(){};
+	obj.prototype=arg;
+	return new obj;
+}
+
+
+
+// Different approaches to creating functions
+function prison(){
+	console.log('declared as a named function');
+}
+prison();
+
+var prison=function prison(){
+	console.log('declared as a local variable with a named function');
+}
+prison();
+
+var prison=function(){
+	console.log('declared as a local variable with an anonymous function');
+}
+prison();
+
+// all three would be called with the same call:
+// prison();
+
+</script>
