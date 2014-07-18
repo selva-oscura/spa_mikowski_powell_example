@@ -1,3 +1,4 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script type="text/javascript">
 //wrong / leaky
 function prison1(){
@@ -272,5 +273,117 @@ prison();
 
 // all three would be called with the same call:
 // prison();
+// with earlier variants of the function overriding earlier variants
 
+
+// SELF-EXECUTING ANONYMOUS FUNCTIONS
+(function(what_to_eat){
+	var sentence='I am going to eat a '+what_to_eat;
+	console.log(sentence);
+})('sandwich');
+
+// With conflict betwen jQuery and Prototype, due to their both using $, the technicque of passing in a variable to the self-executing anonymous function can be used to ensure the $variables for a block of code
+(function($){
+	console.log($);
+})(jQuery);
+
+
+// playing with an example -- NOTE: the function isn't stored in the prison13 variable.  Instead the object is formed by the return value.
+var prison13=(function(){
+	var prisoner_name='Mike',
+		jail_term = '20 year term';
+	return{
+		prisoner : prisoner_name + ' - ' + jail_term,
+		sentence : jail_term
+	};
+})();
+
+// returns: Object {prisoner: "Mike - 20 year term", sentence: "20 year term"}, the return value stated in the function, but not the function itself
+console.log(prison13);
+// prison13.prisoner_name is undefined because it is not an attirbute of the returned object
+console.log(prison13.prisoner_name);
+// returns Mike - 20 year term 
+console.log(prison13.prisoner);
+// returns 20 year term 
+console.log(prison13.sentence);
+//sentence can be changed, but this will not auto-update the return value of prison13.prisoner
+prison13.sentence='2 year term';
+console.log(prison13);
+//instead a function needs to be added to update prison13.prisoner when sentence is updated
+var prison14=(function(){
+	var prisoner_name='Mike',
+		jail_term = '20 year term';
+	return{
+		prisoner : function(){
+			return prisoner_name + ' - ' + jail_term;
+		},
+		sentence : function(){
+			return jail_term;
+		},
+		setJailTerm : function(term){
+			jail_term=term;
+			console.log('updating sentence to: '+term);
+		}
+	}
+})();
+console.log(prison14.prisoner());
+console.log(prison14.sentence());
+prison14.setJailTerm('sentence commuted');
+console.log(prison14.prisoner());
+console.log(prison14.sentence());
+
+// CLOSURE -- A process of preventing the garbage collector from removing a variable from memory by keeping access to the variable outside the execution context in which it was created.  A clousre is created by saving a function with dynamic access to the relevant varialbe, outside of the current execution context
+
+var prison15={
+	names:'Mike and Josh',
+	who:function(){
+		return this.names;		// when using methods in a JS object, this refers to the object
+	}
+}
+console.log(prison15);
+console.log(prison15.names);
+console.log(prison15.who());
+
+
+var prison16={
+	names:'Mike & Josh',
+	who:function(){
+		var that=this;			// with the use of an Ajax call, this will refer to the Ajax call, so we save that=this and refer to the object as that
+		$.ajax({
+			success: function(){
+				// console.log(this.names);
+				console.log(that.names);
+			}
+		});
+	}
+};
+
+prison16.who();
+
+
+
+var menu, outer_function, 
+	food='cake';
+outer_function=function(){
+	var fruit, inner_function;
+	fruit='apple';
+	inner_function=function(){
+		return{food: food, fruit: fruit};
+	}
+	return inner_function;
+}
+menu=outer_function();
+console.log(menu); // returns the inner_function function
+console.log(menu());	// returns the return of the inner_function function, namely: Object {food: "cake", fruit: "apple"} 
+
+
+function sendAjaxRequest(){
+	var scoped_var='yay';
+	$.ajax({
+		success: function(){
+			console.log(scoped_var);
+		}
+	});
+}
+sendAjaxRequest();
 </script>
