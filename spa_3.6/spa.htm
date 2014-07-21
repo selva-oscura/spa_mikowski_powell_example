@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+	<title>SPA Starter</title>
+
+	<!-- stylesheets -->
+	<link rel="stylesheet" type="text/css" href="css/spa.css" />
+	<link rel="stylesheet" type="text/css" href="css/spa.shell.css" />
+
+	<!-- 3rd party JavaScript -->
+	<script src="js/jQuery/jquery-1.11.1.min.js"></script>
+	<script src="js/jQuery/jquery.uriAnchor-1.1.3.js"></script>
+
+	<!-- SPA JavaScript -->
+	<script src="js/spa.js"></script>			<!-- order js by depth of namespace (spa.shell.js depends on namespace declared in spa.js)-->
+	<script src="js/spa.shell.js"></script>
+	<script>
+		$(function(){							// This could also have been written with the standard $(document).ready(function(...))
+			spa.initModule($('#spa'));
+		});
+	</script>
+</head>
+<body>
+	<div id="spa">
+	</div>
+</body>
+</html>

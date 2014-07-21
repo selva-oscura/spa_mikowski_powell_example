@@ -36,14 +36,14 @@ spa.shell = (function(){
 	// --------------------------BEGIN UTILITY VARIABLES----------------------------
 	// ---------------------------END UTILITY VARIABLES-----------------------------
 
-	// ----------------------------BEGIN DOM VARIABLES------------------------------
+	// ----------------------------BEGIN DOM METHODS------------------------------
 	// Begin DOM method /setJqueryMap/
 	setJqueryMap=function(){
 		var $container = stateMap.$container;
 		jqueryMap = { $container : $container};
 	};
 	// End DOM method /setJqueryMap/
-	// -----------------------------END DOM VARIABLES-------------------------------
+	// -----------------------------END DOM METHODS-------------------------------
 
 	// ----------------------------BEGIN EVENT HANDLERS-----------------------------
 	// -----------------------------END EVENT HANDLERS------------------------------

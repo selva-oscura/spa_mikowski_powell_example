@@ -51,7 +51,7 @@ spa.shell = (function(){
 	// --------------------------BEGIN UTILITY VARIABLES----------------------------
 	// ---------------------------END UTILITY VARIABLES-----------------------------
 
-	// ----------------------------BEGIN DOM METHODS------------------------------
+	// ----------------------------BEGIN DOM VARIABLES------------------------------
 	// Begin DOM method /setJqueryMap/
 		// caches jQuery collections to reduce number of jQuery document traversals & improve performance
 	setJqueryMap=function(){
@@ -122,14 +122,18 @@ spa.shell = (function(){
 	}
 	// End DOM method /toggleChat/
 
-	// -----------------------------END DOM METHODS-------------------------------
+	// -----------------------------END DOM VARIABLES-------------------------------
 
 	// ----------------------------BEGIN EVENT HANDLERS-----------------------------
 	// Begin onClickChat event handler to call toggleChat
 	onClickChat = function(event){
-		toggleChat(stateMap.is_chat_retracted);
+		if(toggleChat(stateMap.is_chat_retracted)){
+			$.uriAnchor.setAnchor({
+				chat : (stateMap.is_chat_retracted ? 'open' : 'closed')
+			});
+		}
 		return false;
-	}	
+	};
 	// Begin onClickChat event handler to call toggleChat
 	// -----------------------------END EVENT HANDLERS------------------------------
 
