@@ -1,0 +1,4 @@
+/*
+spa.chat.js
+Chat feature module for SPA
+*/
