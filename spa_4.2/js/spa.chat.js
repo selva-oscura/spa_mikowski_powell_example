@@ -25,8 +25,8 @@ spa.chat = (function(){
 		setJqueryMap, configModule, initModule;
 	// -------------------------END MODULE SCOPE VARIABLES--------------------------
 
-	// --------------------------BEGIN UTILITY VARIABLES----------------------------
-	// ---------------------------END UTILITY VARIABLES-----------------------------
+	// ---------------------------BEGIN UTILITY METHODS-----------------------------
+	// ----------------------------END UTILITY METHODS------------------------------
 
 	// ----------------------------BEGIN DOM METHODS------------------------------
 	// Begin DOM method /setJqueryMap/

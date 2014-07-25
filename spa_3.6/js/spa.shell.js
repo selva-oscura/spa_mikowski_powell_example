@@ -56,13 +56,13 @@ spa.shell = (function(){
 		initModule;
 	// -------------------------END MODULE SCOPE VARIABLES--------------------------
 
-	// --------------------------BEGIN UTILITY VARIABLES----------------------------
+	// ---------------------------BEGIN UTILITY METHODS-----------------------------
 	// Returns copy of stored anchor map; minimised overhead
 	// use jQuery extend() utility to copy object
 	copyAnchorMap = function(){
 		return $.extend(true, {}, stateMap.anchor_map);
 	};
-	// ---------------------------END UTILITY VARIABLES-----------------------------
+	// ----------------------------END UTILITY METHODS------------------------------
 
 	// ----------------------------BEGIN DOM METHODS------------------------------
 	// Begin DOM method /setJqueryMap/
